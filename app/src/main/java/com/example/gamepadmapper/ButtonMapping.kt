@@ -4,10 +4,6 @@ import android.content.Context
 import org.json.JSONArray
 import org.json.JSONObject
 
-/**
- * Satu tombol virtual: posisinya di layar (x, y) sekaligus jadi
- * koordinat target tap yang akan disimulasikan ke game di bawahnya.
- */
 data class ButtonMapping(
     val id: String,
     val label: String,
@@ -57,7 +53,26 @@ object MappingStore {
             .apply()
     }
 
-    // Beberapa tombol contoh saat pertama kali dijalankan (bisa digeser/diedit user)
+    /** Tambah tombol baru dengan posisi default di tengah layar, lalu simpan. */
+    fun addMapping(context: Context, label: String) {
+        val current = load(context)
+        val newMapping = ButtonMapping(
+            id = "btn_${System.currentTimeMillis()}",
+            label = label,
+            x = 500,
+            y = 900
+        )
+        current.add(newMapping)
+        save(context, current)
+    }
+
+    /** Hapus satu tombol berdasarkan id, lalu simpan. */
+    fun removeMapping(context: Context, id: String) {
+        val current = load(context)
+        current.removeAll { it.id == id }
+        save(context, current)
+    }
+
     private fun defaultMappings() = mutableListOf(
         ButtonMapping("btn_a", "A", 900, 1600),
         ButtonMapping("btn_b", "B", 1050, 1500),
