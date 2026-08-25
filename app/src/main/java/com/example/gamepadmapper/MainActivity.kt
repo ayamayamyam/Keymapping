@@ -45,6 +45,22 @@ class MainActivity : AppCompatActivity() {
         findViewById<Button>(R.id.btnAddButton).setOnClickListener {
             showAddButtonDialog()
         }
+        findViewById<Button>(R.id.btnResetDefault).setOnClickListener {
+            confirmResetToDefault()
+        }
+    }
+
+    /** Konfirmasi dulu sebelum reset, karena aksi ini menghapus semua kustomisasi user. */
+    private fun confirmResetToDefault() {
+        AlertDialog.Builder(this)
+            .setTitle("Reset ke Default?")
+            .setMessage("Semua tombol kustom dan posisi yang sudah diatur akan hilang, lalu diganti dengan tombol bawaan (A, B, ↑, ↓).")
+            .setPositiveButton("Reset") { _, _ ->
+                MappingStore.resetToDefault(this)
+                refreshMappingList()
+            }
+            .setNegativeButton("Batal", null)
+            .show()
     }
 
     override fun onResume() {
