@@ -4,11 +4,13 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Intent
+import android.content.SharedPreferences
 import android.graphics.Color
 import android.graphics.PixelFormat
 import android.os.Build
 import android.os.IBinder
 import android.view.Gravity
+import android.view.HapticFeedbackConstants
 import android.view.MotionEvent
 import android.view.View
 import android.view.WindowManager
@@ -29,8 +31,14 @@ class OverlayService : Service() {
 
     private lateinit var windowManager: WindowManager
     private val overlayViews = mutableListOf<View>()
+    private var controlView: View? = null
     private val NOTIF_CHANNEL_ID = "overlay_service_channel"
     private val NOTIF_ID = 1001
+
+    // Auto-refresh tombol saat mapping berubah (tambah/hapus/geser/reset dari
+    // MainActivity ATAU dari overlay itu sendiri), tanpa perlu restart service.
+    private val mappingChangeListener =
+        SharedPreferences.OnSharedPreferenceChangeListener { _, _ -> redrawButtons() }
 
     override fun onCreate() {
         super.onCreate()
@@ -39,6 +47,7 @@ class OverlayService : Service() {
         startAsForeground()
         drawControlButton()
         drawButtons()
+        MappingStore.registerChangeListener(this, mappingChangeListener)
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int = START_STICKY
@@ -47,8 +56,19 @@ class OverlayService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
+        MappingStore.unregisterChangeListener(this, mappingChangeListener)
         overlayViews.forEach { runCatching { windowManager.removeView(it) } }
         overlayViews.clear()
+        controlView = null
+    }
+
+    /** Hapus semua tombol tap (bukan tombol kontrol EDIT/PLAY) lalu gambar ulang dari data terbaru. */
+    private fun redrawButtons() {
+        val buttonViews = overlayViews.filter { it !== controlView }
+        buttonViews.forEach { runCatching { windowManager.removeView(it) } }
+        overlayViews.removeAll(buttonViews)
+        drawButtons()
+        updateButtonsVisualState()
     }
 
     private fun startAsForeground() {
@@ -101,12 +121,13 @@ class OverlayService : Service() {
 
         windowManager.addView(controlView, params)
         overlayViews.add(controlView)
+        this.controlView = controlView
     }
 
     private fun updateButtonsVisualState() {
         // Tombol jadi agak transparan saat Edit Mode, sebagai penanda visual.
         overlayViews.forEach { view ->
-            if (view is TextView && view.text != "🔓 EDIT" && view.text != "🔒 PLAY") {
+            if (view !== controlView) {
                 view.alpha = if (editMode) 0.5f else 1f
             }
         }
@@ -197,10 +218,13 @@ class OverlayService : Service() {
                             MappingStore.save(this, all)
                         }
                         editMode && heldDuration >= 600 -> {
-                            // Tahan lama di Edit Mode -> hapus tombol ini
+                            // Tahan lama di Edit Mode -> hapus tombol ini.
+                            // Getaran singkat sebagai penanda supaya user tahu
+                            // tombol benar-benar terhapus (bukan cuma dilepas).
+                            // View-nya akan hilang otomatis lewat redrawButtons()
+                            // yang terpicu oleh listener perubahan mapping.
+                            v.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                             MappingStore.removeMapping(this, mapping.id)
-                            runCatching { windowManager.removeView(v) }
-                            overlayViews.remove(v)
                         }
                         !editMode && !moved -> {
                             // Tap singkat di Play Mode -> kirim tap ke game
