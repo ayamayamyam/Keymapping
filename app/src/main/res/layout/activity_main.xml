@@ -73,6 +73,13 @@
             android:text="+ Tambah Tombol"
             android:layout_marginBottom="12dp" />
 
+        <Button
+            android:id="@+id/btnResetDefault"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="↺ Reset ke Default"
+            android:layout_marginBottom="12dp" />
+
         <LinearLayout
             android:id="@+id/mappingListContainer"
             android:layout_width="match_parent"
@@ -85,7 +92,7 @@
             android:layout_marginTop="16dp"
             android:textSize="12sp"
             android:textColor="#666666"
-            android:text="Catatan: setelah tambah/hapus tombol, matikan lalu nyalakan ulang 'Tombol Virtual' di atas supaya perubahan terlihat." />
+            android:text="Catatan: tombol yang sedang tampil di layar akan otomatis ter-update saat kamu tambah/hapus/reset di sini." />
 
     </LinearLayout>
 </ScrollView>
