@@ -1,51 +1,91 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
-    android:gravity="center"
-    android:padding="24dp">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Gamepad Mapper"
-        android:textSize="22sp"
-        android:textStyle="bold"
-        android:layout_marginBottom="24dp" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <TextView
-        android:id="@+id/statusText"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Status izin akan muncul di sini"
-        android:layout_marginBottom="24dp" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Gamepad Mapper"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnGrantOverlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="1. Izinkan Overlay" />
+        <TextView
+            android:id="@+id/statusText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Status izin akan muncul di sini"
+            android:layout_marginBottom="16dp" />
 
-    <Button
-        android:id="@+id/btnGrantAccessibility"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="2. Aktifkan Accessibility Service" />
+        <Button
+            android:id="@+id/btnGrantOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="1. Izinkan Overlay" />
 
-    <Button
-        android:id="@+id/btnStartOverlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
-        android:text="3. Tampilkan Tombol Virtual" />
+        <Button
+            android:id="@+id/btnGrantAccessibility"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="2. Aktifkan Accessibility Service" />
 
-    <Button
-        android:id="@+id/btnStopOverlay"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
-        android:text="Sembunyikan Tombol Virtual" />
+        <Button
+            android:id="@+id/btnStartOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:text="3. Tampilkan Tombol Virtual" />
 
-</LinearLayout>
+        <Button
+            android:id="@+id/btnStopOverlay"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Sembunyikan Tombol Virtual" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="#33000000"
+            android:layout_marginTop="24dp"
+            android:layout_marginBottom="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Daftar Tombol"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:layout_marginBottom="12dp" />
+
+        <Button
+            android:id="@+id/btnAddButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="+ Tambah Tombol"
+            android:layout_marginBottom="12dp" />
+
+        <LinearLayout
+            android:id="@+id/mappingListContainer"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical" />
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:textSize="12sp"
+            android:textColor="#666666"
+            android:text="Catatan: setelah tambah/hapus tombol, matikan lalu nyalakan ulang 'Tombol Virtual' di atas supaya perubahan terlihat." />
+
+    </LinearLayout>
+</ScrollView>
