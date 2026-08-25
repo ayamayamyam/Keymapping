@@ -1,6 +1,7 @@
 package com.example.gamepadmapper
 
 import android.content.Context
+import android.content.SharedPreferences
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -71,6 +72,27 @@ object MappingStore {
         val current = load(context)
         current.removeAll { it.id == id }
         save(context, current)
+    }
+
+    /** Kembalikan seluruh tombol ke posisi & daftar bawaan (menghapus kustomisasi user). */
+    fun resetToDefault(context: Context) {
+        save(context, defaultMappings())
+    }
+
+    /**
+     * Daftarkan listener yang dipanggil setiap kali daftar mapping berubah
+     * (tambah/hapus/geser/reset) — dari komponen manapun, termasuk activity lain.
+     * Dipakai OverlayService supaya tombol yang sedang tampil ikut ter-refresh
+     * tanpa perlu mematikan-menyalakan ulang overlay secara manual.
+     */
+    fun registerChangeListener(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .registerOnSharedPreferenceChangeListener(listener)
+    }
+
+    fun unregisterChangeListener(context: Context, listener: SharedPreferences.OnSharedPreferenceChangeListener) {
+        context.getSharedPreferences(PREFS, Context.MODE_PRIVATE)
+            .unregisterOnSharedPreferenceChangeListener(listener)
     }
 
     private fun defaultMappings() = mutableListOf(
