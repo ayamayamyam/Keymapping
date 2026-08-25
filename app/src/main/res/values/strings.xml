@@ -1,0 +1,6 @@
+<resources>
+    <string name="app_name">Gamepad Mapper</string>
+    <string name="accessibility_service_description">
+        Dipakai untuk mensimulasikan tap layar dari tombol virtual (gamepad overlay) ke koordinat yang kamu tentukan.
+    </string>
+</resources>

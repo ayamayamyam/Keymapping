@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:gravity="center"
+    android:padding="24dp">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Gamepad Mapper"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        android:layout_marginBottom="24dp" />
+
+    <TextView
+        android:id="@+id/statusText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Status izin akan muncul di sini"
+        android:layout_marginBottom="24dp" />
+
+    <Button
+        android:id="@+id/btnGrantOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="1. Izinkan Overlay" />
+
+    <Button
+        android:id="@+id/btnGrantAccessibility"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="2. Aktifkan Accessibility Service" />
+
+    <Button
+        android:id="@+id/btnStartOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="3. Tampilkan Tombol Virtual" />
+
+    <Button
+        android:id="@+id/btnStopOverlay"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:text="Sembunyikan Tombol Virtual" />
+
+</LinearLayout>
