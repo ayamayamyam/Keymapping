@@ -1,45 +1,56 @@
 package com.example.gamepadmapper
 
+import android.app.AlertDialog
 import android.content.Intent
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
 import android.text.TextUtils
+import android.view.Gravity
+import android.widget.Button
+import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var statusText: TextView
+    private lateinit var mappingListContainer: LinearLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         statusText = findViewById(R.id.statusText)
+        mappingListContainer = findViewById(R.id.mappingListContainer)
 
-        findViewById<android.widget.Button>(R.id.btnGrantOverlay).setOnClickListener {
+        findViewById<Button>(R.id.btnGrantOverlay).setOnClickListener {
             requestOverlayPermission()
         }
-        findViewById<android.widget.Button>(R.id.btnGrantAccessibility).setOnClickListener {
+        findViewById<Button>(R.id.btnGrantAccessibility).setOnClickListener {
             openAccessibilitySettings()
         }
-        findViewById<android.widget.Button>(R.id.btnStartOverlay).setOnClickListener {
+        findViewById<Button>(R.id.btnStartOverlay).setOnClickListener {
             if (Settings.canDrawOverlays(this)) {
                 startService(Intent(this, OverlayService::class.java))
             } else {
                 requestOverlayPermission()
             }
         }
-        findViewById<android.widget.Button>(R.id.btnStopOverlay).setOnClickListener {
+        findViewById<Button>(R.id.btnStopOverlay).setOnClickListener {
             stopService(Intent(this, OverlayService::class.java))
+        }
+        findViewById<Button>(R.id.btnAddButton).setOnClickListener {
+            showAddButtonDialog()
         }
     }
 
     override fun onResume() {
         super.onResume()
         updateStatus()
+        refreshMappingList()
     }
 
     private fun updateStatus() {
@@ -48,6 +59,63 @@ class MainActivity : AppCompatActivity() {
         statusText.text = buildString {
             append(if (overlayOk) "✅ Izin overlay: aktif\n" else "❌ Izin overlay: belum aktif\n")
             append(if (accessibilityOk) "✅ Accessibility service: aktif" else "❌ Accessibility service: belum aktif")
+        }
+    }
+
+    /** Menampilkan dialog input nama tombol baru, lalu menyimpannya. */
+    private fun showAddButtonDialog() {
+        val input = EditText(this)
+        input.hint = "Nama tombol, misal: X"
+
+        AlertDialog.Builder(this)
+            .setTitle("Tambah Tombol Baru")
+            .setView(input)
+            .setPositiveButton("Tambah") { _, _ ->
+                val label = input.text.toString().trim()
+                if (label.isNotEmpty()) {
+                    MappingStore.addMapping(this, label)
+                    refreshMappingList()
+                }
+            }
+            .setNegativeButton("Batal", null)
+            .show()
+    }
+
+    /** Menggambar ulang daftar tombol yang tersimpan sebagai baris label + tombol hapus. */
+    private fun refreshMappingList() {
+        mappingListContainer.removeAllViews()
+        val mappings = MappingStore.load(this)
+
+        if (mappings.isEmpty()) {
+            val empty = TextView(this)
+            empty.text = "Belum ada tombol. Tekan '+ Tambah Tombol' di atas."
+            mappingListContainer.addView(empty)
+            return
+        }
+
+        mappings.forEach { mapping ->
+            val row = LinearLayout(this)
+            row.orientation = LinearLayout.HORIZONTAL
+            row.gravity = Gravity.CENTER_VERTICAL
+            row.setPadding(0, 12, 0, 12)
+
+            val labelView = TextView(this)
+            labelView.text = mapping.label
+            labelView.textSize = 16f
+            labelView.layoutParams = LinearLayout.LayoutParams(
+                0, LinearLayout.LayoutParams.WRAP_CONTENT, 1f
+            )
+
+            val deleteButton = Button(this)
+            deleteButton.text = "Hapus"
+            deleteButton.setOnClickListener {
+                MappingStore.removeMapping(this, mapping.id)
+                refreshMappingList()
+            }
+
+            row.addView(labelView)
+            row.addView(deleteButton)
+            mappingListContainer.addView(row)
         }
     }
 
