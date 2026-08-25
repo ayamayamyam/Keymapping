@@ -37,7 +37,14 @@
         <service
             android:name=".OverlayService"
             android:foregroundServiceType="specialUse"
-            android:exported="false" />
+            android:exported="false">
+            <!-- WAJIB di Android 14+ (API 34): tanpa property ini, startForeground()
+                 akan melempar MissingForegroundServiceTypeException saat overlay
+                 dinyalakan di HP dengan Android 14 ke atas. -->
+            <property
+                android:name="android.app.PROPERTY_SPECIAL_USE_FGS_SUBTYPE"
+                android:value="virtual gamepad button overlay" />
+        </service>
 
     </application>
 </manifest>
